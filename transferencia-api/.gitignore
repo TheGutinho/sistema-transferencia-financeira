@@ -32,7 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-
 /backend/target/
 /backend/.bin/
 /frontend/node_modules/

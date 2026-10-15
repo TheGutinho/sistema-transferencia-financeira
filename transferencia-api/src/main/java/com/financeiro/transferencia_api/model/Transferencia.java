@@ -1,87 +1,104 @@
 package com.financeiro.transferencia_api.model;
 
+import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "transferencias")
+@Table(name = "tb_transferencia")
 public class Transferencia {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotBlank
-	@Column(nullable = false)
-	private String origem;
+    @NotBlank(message = "A conta de origem é obrigatória")
+    @Pattern(regexp = "\\d{10}", message = "A conta de origem deve ter exatamente 10 dígitos numéricos (XXXXXXXXXX)")
+    @Column(nullable = false, length = 10)
+    private String contaOrigem;
 
-	@NotBlank
-	@Column(nullable = false)
-	private String destino;
+    @NotBlank(message = "A conta de destino é obrigatória")
+    @Pattern(regexp = "\\d{10}", message = "A conta de destino deve ter exatamente 10 dígitos numéricos (XXXXXXXXXX)")
+    @Column(nullable = false, length = 10)
+    private String contaDestino;
 
-	@NotNull
-	@DecimalMin(value = "0.01")
-	@Column(nullable = false, precision = 19, scale = 2)
-	private BigDecimal valor;
+    @NotNull(message = "O valor da transferência é obrigatório")
+    @DecimalMin(value = "0.01", message = "O valor da transferência deve ser maior que zero")
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal valor;
 
-	@Column(nullable = false)
-	private LocalDateTime dataHora;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal taxa;
 
-	@PrePersist
-	void definirDataHora() {
-		if (dataHora == null) {
-			dataHora = LocalDateTime.now();
-		}
-	}
+    @NotNull(message = "A data de agendamento é obrigatória")
+    @Column(nullable = false)
+    private LocalDate dataAgendamento;
 
-	public Long getId() {
-		return id;
-	}
+    @NotNull(message = "A data da transferência é obrigatória")
+    @Column(nullable = false)
+    private LocalDate dataTransferencia;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Transferencia() {
+        this.dataAgendamento = LocalDate.now();
+    }
 
-	public String getOrigem() {
-		return origem;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setOrigem(String origem) {
-		this.origem = origem;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getDestino() {
-		return destino;
-	}
+    public String getContaOrigem() {
+        return contaOrigem;
+    }
 
-	public void setDestino(String destino) {
-		this.destino = destino;
-	}
+    public void setContaOrigem(String contaOrigem) {
+        this.contaOrigem = contaOrigem;
+    }
 
-	public BigDecimal getValor() {
-		return valor;
-	}
+    public String getContaDestino() {
+        return contaDestino;
+    }
 
-	public void setValor(BigDecimal valor) {
-		this.valor = valor;
-	}
+    public void setContaDestino(String contaDestino) {
+        this.contaDestino = contaDestino;
+    }
 
-	public LocalDateTime getDataHora() {
-		return dataHora;
-	}
+    public BigDecimal getValor() {
+        return valor;
+    }
 
-	public void setDataHora(LocalDateTime dataHora) {
-		this.dataHora = dataHora;
-	}
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
+
+    public BigDecimal getTaxa() {
+        return taxa;
+    }
+
+    public void setTaxa(BigDecimal taxa) {
+        this.taxa = taxa;
+    }
+
+    public LocalDate getDataAgendamento() {
+        return dataAgendamento;
+    }
+
+    public void setDataAgendamento(LocalDate dataAgendamento) {
+        this.dataAgendamento = dataAgendamento;
+    }
+
+    public LocalDate getDataTransferencia() {
+        return dataTransferencia;
+    }
+
+    public void setDataTransferencia(LocalDate dataTransferencia) {
+        this.dataTransferencia = dataTransferencia;
+    }
 }
